@@ -8,7 +8,7 @@ import (
 )
 
 func NewEventController() *controllers.EventController {
-	repo := repositories.NewEventRepository(config.DBMaster)
+	repo := repositories.NewEventRepository(config.DBMaster, config.DBReplica)
 	service := services.NewEventService(repo)
 	return controllers.NewEventController(service)
 }

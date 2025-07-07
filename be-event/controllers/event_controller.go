@@ -18,7 +18,17 @@ func NewEventController(service *services.EventService) *EventController {
 }
 
 func (c *EventController) ListEvents(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"message": "ListEvents dummy"})
+	events, err := c.service.GetAllEvents()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Không thể lấy danh sách sự kiện"})
+		return
+	}
+
+	var res []response.EventResponse
+	for _, e := range events {
+		res = append(res, response.NewEventResponse(&e))
+	}
+	ctx.JSON(http.StatusOK, res)
 }
 
 func (c *EventController) CreateEvent(ctx *gin.Context) {
