@@ -59,3 +59,9 @@ func (s *EventService) CreateEvent(dto *dto.EventDTO) (*models.Event, error) {
 
 	return &event, nil
 }
+
+func (s *EventService) GetAllEvents() ([]models.Event, error) {
+	var events []models.Event
+	err := s.repo.FindAllEvents(&events)
+	return events, err
+}

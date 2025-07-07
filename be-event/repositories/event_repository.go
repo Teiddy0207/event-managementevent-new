@@ -8,14 +8,20 @@ import (
 type EventRepository interface {
 	CreateEvent(event *models.Event) error
 	AttachServices(eventID uint, serviceIDs []uint) error
+	FindAllEvents(events *[]models.Event) error
 }
 
 type eventRepository struct {
-	masterDB *gorm.DB
+	masterDB  *gorm.DB
+	replicaDB *gorm.DB
 }
 
-func NewEventRepository(masterDB *gorm.DB) EventRepository {
-	return &eventRepository{masterDB: masterDB}
+func NewEventRepository(masterDB, replicaDB *gorm.DB) EventRepository {
+	return &eventRepository{
+
+		masterDB:  masterDB,
+		replicaDB: replicaDB,
+	}
 }
 
 func (r *eventRepository) CreateEvent(event *models.Event) error {
@@ -31,4 +37,12 @@ func (r *eventRepository) AttachServices(eventID uint, serviceIDs []uint) error 
 		})
 	}
 	return r.masterDB.Create(&relations).Error
+}
+
+func (r *eventRepository) FindAllEvents(events *[]models.Event) error {
+
+	return r.replicaDB.Preload("EventType").
+		Preload("Location").
+		Preload("Services").
+		Find(events).Error
 }
