@@ -1,0 +1,55 @@
+services:
+  postgres-master-event:
+    image: postgres:15
+    container_name: postgres-master-event
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5544:5432"
+    volumes:
+      - ./postgres/master/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/master/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./postgres/master/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - master-data:/var/lib/postgresql/data
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    networks:
+      - postgres-network
+
+  postgres-replica-event:
+    image: postgres:15
+    container_name: postgres-replica-event
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5545:5432"
+    volumes:
+      - ./postgres/replica/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgres/replica/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./postgres/replica/init-replica.sh:/init-replica.sh
+      - replica-data:/var/lib/postgresql/data
+    entrypoint: ["/bin/bash", "/init-replica.sh"]
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    depends_on:
+      - postgres-master-event
+    networks:
+      - postgres-network
+
+  redis-event:
+    image: redis:7
+    container_name: redis-event
+    ports:
+      - "6379:6379"
+    networks:
+      - postgres-network
+
+volumes:
+  master-data:
+  replica-data:
+
+networks:
+  postgres-network:
+    driver: bridge
