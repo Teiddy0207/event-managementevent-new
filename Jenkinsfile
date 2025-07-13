@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -8,12 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Clone') {
-            steps {
-                git 'https://github.com/Teiddy0207/event-managementevent-new.git'
-            }
-        }
-
         stage('Build backend Docker image') {
             steps {
                 sh 'docker build -t event-backend -f Docker/Dockerfile .'
