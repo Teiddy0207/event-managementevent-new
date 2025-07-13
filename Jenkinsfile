@@ -15,7 +15,7 @@ pipeline {
 
         stage('Compose Up') {
             steps {
-                sh 'docker compose --env-file $ENV_FILE -f $COMPOSE_FILE up -d --build'
+                sh 'docker-compose --env-file $ENV_FILE -f $COMPOSE_FILE up -d --build'
             }
         }
 

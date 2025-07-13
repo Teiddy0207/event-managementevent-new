@@ -10,8 +10,12 @@ func InitRouter() *gin.Engine {
 
 	eventController := NewEventController()
 	authController := NewAuthController()
+
+	ticketController := NewTicketController()
 	RegisterEventRoutes(r, eventController)
 	RegisterAuthRoutes(r, authController)
+	RegisterTicketRoutes(r, ticketController)
+
 	return r
 }
 
@@ -20,6 +24,18 @@ func RegisterEventRoutes(r *gin.Engine, controller *controllers.EventController)
 	{
 		events.GET("/api/list-events", controller.ListEvents)
 		events.POST("/api/create-events", controller.CreateEvent)
+
+	}
+}
+
+func RegisterTicketRoutes(r *gin.Engine, controller *controllers.TicketController) {
+	tickets := r.Group("/tickets")
+	{
+		// tickets.GET("/api/list-tickets", controller.ListTickets)
+		tickets.POST("/api/create-ticket", controller.CreateTicket)
+		// tickets.GET("/api/ticket/:id", controller.GetTicketByID)
+		// tickets.PUT("/api/update-ticket/:id", controller.UpdateTicket)
+		// tickets.DELETE("/api/delete-ticket/:id", controller.DeleteTicket)
 	}
 }
 

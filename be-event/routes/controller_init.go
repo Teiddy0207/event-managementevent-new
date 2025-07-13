@@ -18,3 +18,9 @@ func NewAuthController() *controllers.AuthController {
 	service := services.NewAuthService(repo)
 	return controllers.NewAuthController(service)
 }
+
+func NewTicketController() *controllers.TicketController {
+	repo := repositories.NewTicketRepository(config.DBMaster, config.DBReplica)
+	service := services.NewTicketService(repo)
+	return controllers.NewTicketController(service)
+}

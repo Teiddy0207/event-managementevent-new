@@ -46,9 +46,43 @@ services:
     networks:
       - postgres-network
 
+  backend-event:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile
+    container_name: backend-event
+    depends_on:
+      - postgres-master-event
+      - redis-event
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_HOST: postgres-master-event
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      REDIS_HOST: redis-event
+    networks:
+      - postgres-network
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-event
+    user: root
+    ports:
+      - "8081:8080"  # Cổng 8081 ngoài, 8080 trong container
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock  # Cho phép Jenkins build Docker
+    networks:
+      - postgres-network
+
+
 volumes:
   master-data:
   replica-data:
+  jenkins-data:
 
 networks:
   postgres-network:

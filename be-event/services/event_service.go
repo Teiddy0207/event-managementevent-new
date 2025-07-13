@@ -46,6 +46,12 @@ func (s *EventService) CreateEvent(dto *dto.EventDTO) (*models.Event, error) {
 		EventDate:   eventDate,
 	}
 
+	if dto.EventTypeID != 1 && len(dto.ServiceIDs) > 0 {
+		if err := s.repo.AttachServices(event.ID, dto.ServiceIDs); err != nil {
+			return nil, err
+		}
+	}
+
 	err = s.repo.CreateEvent(&event)
 	if err != nil {
 		return nil, err

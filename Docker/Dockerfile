@@ -10,6 +10,7 @@ RUN go mod download
 COPY ./be-event ./
 
 # Build ứng dụng Go
+RUN go mod tidy 
 RUN go build -o main .
 
 # Chạy ứng dụng
