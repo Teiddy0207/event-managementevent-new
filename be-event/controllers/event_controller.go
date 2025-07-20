@@ -38,6 +38,13 @@ func (c *EventController) CreateEvent(ctx *gin.Context) {
 		return
 	}
 
+	userIDRaw, exists := ctx.Get("userID")
+	if !exists {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Không xác định được người dùng"})
+		return
+	}
+	userID := userIDRaw.(uint)
+
 	// Tạo DTO
 	eventDTO := &dto.EventDTO{
 		Title:       req.Title,
@@ -47,7 +54,7 @@ func (c *EventController) CreateEvent(ctx *gin.Context) {
 		EventTypeID: req.EventTypeID,
 		EventDate:   req.EventDate,
 		LocationID:  req.LocationID,
-		UserID:      req.UserID,
+		UserID: 	userID,
 		ServiceIDs:  req.ServiceIDs,
 	}
 

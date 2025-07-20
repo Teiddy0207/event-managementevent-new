@@ -17,6 +17,8 @@ type Event struct {
 	Location  Location  `gorm:"foreignKey:LocationID"`
 	User      User      `gorm:"foreignKey:UserID"`
 	Services  []Service `gorm:"many2many:event_services"`
+	Tickets []Ticket `gorm:"foreignKey:EventID" json:"tickets"` // ⚠️ dòng này cần có
+
 	CreatedAt time.Time
 
 }

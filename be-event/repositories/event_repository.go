@@ -44,5 +44,6 @@ func (r *eventRepository) FindAllEvents(events *[]models.Event) error {
 	return r.replicaDB.Preload("EventType").
 		Preload("Location").
 		Preload("Services").
+		Preload("Tickets").
 		Find(events).Error
 }

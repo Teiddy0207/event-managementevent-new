@@ -65,7 +65,9 @@ services:
       REDIS_HOST: redis-event
     networks:
       - postgres-network
-
+    volumes:
+      - ../be-event:/app  # Mount source code từ máy thật vào container
+      - /app/tmp
   jenkins:
     image: jenkins/jenkins:lts
     container_name: jenkins-event
